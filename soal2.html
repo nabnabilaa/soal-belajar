@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kuis Komprehensif - 40 Soal Vektor Lengkap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #f8fafc;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-color: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 85vh;
+        }
+
+        /* Header & Progress */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
+            padding: 30px 25px 20px 25px;
+            position: relative;
+        }
+
+        .header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Tabs Selection */
+        .tabs-container {
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 15px 25px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .tabs-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            padding: 0 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-color);
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .tab-btn.active {
+            background: var(--text-dark);
+            color: white;
+            border-color: var(--text-dark);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-wrapper {
+            background: var(--border);
+            height: 6px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #fde047;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Quiz Body */
+        .quiz-body {
+            padding: 30px 25px;
+            flex-grow: 1;
+        }
+
+        .cat-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .question-number {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        /* Math Typography */
+        em, .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 110%;
+            color: #0f172a;
+            padding: 0 2px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 15px;
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #e0e7ff;
+            transform: translateY(-2px);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* States */
+        .option-btn.correct {
+            border-color: var(--success);
+            background: var(--success-bg);
+            color: #064e3b;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+        .option-btn.correct .option-letter { background: var(--success); color: white; }
+
+        .option-btn.wrong {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+            color: #7f1d1d;
+        }
+        .option-btn.wrong .option-letter { background: var(--danger); color: white; }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+            transform: none !important;
+        }
+
+        /* Explanation Baru */
+        .explanation-box {
+            margin-top: 35px; 
+            padding: 24px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 6px solid var(--primary);
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            display: none;
+            animation: slideDown 0.4s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .explanation-box.show { display: block; }
+        .explanation-title {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            color: var(--primary);
+            font-size: 17px;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 12px;
+        }
+
+        /* Footer / Navigation */
+        .quiz-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            background: var(--secondary);
+            z-index: 10;
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .next-btn.show { display: inline-block; animation: fadeIn 0.4s ease; }
+        .next-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        /* Results Screen */
+        .result-screen {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .score-display {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .grade-a { background: var(--success-bg); color: #064e3b; }
+        .grade-b { background: #e0e7ff; color: #3730a3; }
+        .grade-c { background: #fef3c7; color: #92400e; }
+        .grade-d { background: var(--danger-bg); color: #7f1d1d; }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .bk-card {
+            background: var(--bg-color);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .bk-title { font-size: 12px; color: var(--text-muted); font-weight: 600; line-height: 1.3; margin-bottom: 6px;}
+        .bk-score { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+        .bk-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+        .bk-fill { height: 100%; background: var(--primary); }
+
+        .restart-btn {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 15px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Mode */
+        @media (max-width: 600px) {
+            body { padding: 0; background-color: white; }
+            .quiz-container { border-radius: 0; box-shadow: none; min-height: 100vh; height: 100vh; }
+            .header { padding: 20px 15px 15px 15px; }
+            .tabs-container { padding: 10px 15px; }
+            .quiz-body { padding: 20px 15px 100px 15px; overflow-y: auto; }
+            .quiz-footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: white; box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05); }
+            .next-btn { width: 100%; padding: 16px; font-size: 16px; }
+            .breakdown-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="app">
+    <!-- Konten Render -->
+</div>
+
+<script>
+// Data Kategori & 40 Soal Vektor
+const CATS = [
+  {id: 0, name: "Semua Bab", bg: "#e0e7ff", tc: "#3730a3"},
+  {id: 1, name: "Definisi", bg: "#ede9fe", tc: "#4c1d95"},
+  {id: 2, name: "Geometris", bg: "#d1fae5", tc: "#064e3b"},
+  {id: 3, name: "Analitis", bg: "#fce7f3", tc: "#831843"},
+  {id: 4, name: "Operasi", bg: "#dcfce7", tc: "#14532d"},
+  {id: 5, name: "Skalar (Dot)", bg: "#e0e7ff", tc: "#1e3a8a"},
+  {id: 6, name: "Perbandingan", bg: "#fef3c7", tc: "#78350f"},
+  {id: 7, name: "Proyeksi", bg: "#fee2e2", tc: "#7f1d1d"},
+  {id: 8, name: "Penerapan", bg: "#f1f5f9", tc: "#0f172a"}
+];
+
+const ALL = [
+  // 1. DEFINISI
+  {cat:1,q:"Besaran yang memiliki nilai (besar) dan arah disebut …", o:["Skalar","Vektor","Tensor","Matriks","Konstanta"],ans:1,
+   e:"<b>Vektor</b> adalah besaran yang memiliki besar (magnitudo) dan arah.<br>Contoh: kecepatan, gaya, perpindahan."},
+  {cat:1,q:"Manakah yang merupakan contoh besaran vektor?", o:["Suhu","Massa","Kecepatan","Waktu","Volume"],ans:2,
+   e:"<b>Kecepatan</b> adalah besaran vektor karena memiliki besar (misal 60 km/jam) dan arah (misal ke timur).<br>Suhu, massa, waktu, volume adalah besaran skalar."},
+  {cat:1,q:"Sebuah vektor digambarkan sebagai ruas garis berarah. Ujung ruas garis yang diberi tanda panah disebut …", o:["Titik pangkal","Titik ujung","Titik tengah","Titik asal","Titik nol"],ans:1,
+   e:"Dalam representasi geometri, ujung vektor yang diberi anak panah disebut <b>titik ujung</b> (kepala vektor), sedangkan pangkalnya disebut titik pangkal."},
+  {cat:1,q:"Dua vektor dikatakan sama jika …", o:["Titik pangkalnya sama","Titik ujungnya sama","Besar dan arahnya sama","Panjangnya saja sama","Arahnya saja sama"],ans:2,
+   e:"Dua vektor dikatakan sama (ekivalen) jika memiliki <b>besar (panjang) yang sama DAN arah yang sama</b>, tanpa memandang posisi titik pangkalnya."},
+  {cat:1,q:"Vektor yang besarnya nol dan tidak memiliki arah yang pasti disebut …", o:["Vektor satuan","Vektor posisi","Vektor nol","Vektor negatif","Vektor basis"],ans:2,
+   e:"<b>Vektor nol (0)</b> adalah vektor dengan panjang = 0 dan arahnya tidak terdefinisi."},
+
+  // 2. GEOMETRIS
+  {cat:2,q:"Pada koordinat Kartesius 2D, titik A(3, 4). Panjang vektor posisi <em>OA</em> adalah …", o:["3","4","5","7","√7"],ans:2,
+   e:"Panjang <em>|OA|</em> = √(x² + y²)<br><em>|OA|</em> = √(3² + 4²) = √(9+16) = √25 = <b>5</b>"},
+  {cat:2,q:"Vektor <em>AB</em> dengan A(1,2) dan B(4,6). Representasi vektor <em>AB</em> dalam komponen adalah …", o:["(3, 4)","(4, 3)","(5, 8)","(−3, −4)","(3, −4)"],ans:0,
+   e:"Vektor <em>AB</em> = B − A<br><em>AB</em> = (4−1, 6−2) = <b>(3, 4)</b>"},
+  {cat:2,q:"Jika vektor <em>a</em> digambarkan dari titik P ke Q, maka vektor <em>−a</em> adalah …", o:["Vektor dari P ke Q dengan panjang 2 kali","Vektor dari Q ke P","Vektor tegak lurus <em>a</em>","Vektor dengan panjang nol","Vektor dari O ke P"],ans:1,
+   e:"Vektor negatif <em>−a</em> memiliki besar yang sama dengan <em>a</em> tetapi <b>arahnya berlawanan</b>, yaitu dari Q ke P (vektor QP)."},
+  {cat:2,q:"Dua vektor disebut antiparalel jika …", o:["Besarnya sama","Arahnya sama","Arahnya berlawanan","Tegak lurus satu sama lain","Titik pangkalnya sama"],ans:2,
+   e:"Dua vektor antiparalel memiliki <b>arah yang saling berlawanan</b> (membentuk sudut 180°), meskipun besarnya bisa berbeda."},
+  {cat:2,q:"Pada segitiga OAB, diketahui <em>OA</em> = <em>a</em> dan <em>OB</em> = <em>b</em>. Vektor <em>AB</em> = …", o:["a + b","a − b","b − a","−a − b","a + 2b"],ans:2,
+   e:"Gunakan aturan ujung kurangi pangkal:<br><em>AB</em> = Posisi B − Posisi A<br><em>AB</em> = <em>OB</em> − <em>OA</em> = <b>b − a</b>"},
+
+  // 3. ANALITIS
+  {cat:3,q:"Vektor <em>a</em> = 3<em>i</em> − 4<em>j</em> + 0<em>k</em>. Panjang <em>|a|</em> = …", o:["1","5","7","√7","3"],ans:1,
+   e:"<em>|a|</em> = √(3² + (−4)² + 0²)<br><em>|a|</em> = √(9 + 16) = √25 = <b>5</b>"},
+  {cat:3,q:"Titik A(2, −1, 3) dan B(5, 3, −1). Komponen vektor <em>AB</em> adalah …", o:["(3, 4, −4)","(−3, −4, 4)","(7, 2, 2)","(3, −4, 4)","(−3, 4, −4)"],ans:0,
+   e:"<em>AB</em> = Titik B − Titik A<br><em>AB</em> = (5−2, 3−(−1), −1−3)<br><em>AB</em> = <b>(3, 4, −4)</b>"},
+  {cat:3,q:"Vektor satuan dari <em>a</em> = (0, 3, 4) adalah …", o:["(0, 3/5, 4/5)","(0, 3, 4)","(0, 1, 1)","(0, 3/7, 4/7)","(0, 3/25, 4/25)"],ans:0,
+   e:"1. Cari panjang <em>|a|</em> = √(0+9+16) = √25 = 5.<br>2. Vektor satuan (â) = <em>a</em> / <em>|a|</em><br>â = (0/5, 3/5, 4/5) = <b>(0, 3/5, 4/5)</b>"},
+  {cat:3,q:"Diketahui vektor kolom <em>p</em> = [2, −3, 6]ᵀ. Nilai <em>|p|</em> = …", o:["5","6","7","8","11"],ans:2,
+   e:"<em>|p|</em> = √(2² + (−3)² + 6²)<br><em>|p|</em> = √(4 + 9 + 36) = √49 = <b>7</b>"},
+  {cat:3,q:"Jika <em>a</em> = 2<em>i</em> + <em>j</em> − 2<em>k</em>, vektor satuan searah <em>a</em> adalah …", o:["⅔i + ⅓j − ⅔k","½i + ¼j − ½k","2i + j − 2k","⅓i + ⅓j − ⅓k","¼i + ¼j − ¼k"],ans:0,
+   e:"1. Cari panjang <em>|a|</em> = √(4 + 1 + 4) = √9 = 3.<br>2. Vektor satuan = <em>a</em> / 3<br>Hasil = <b>(2/3)i + (1/3)j − (2/3)k</b>"},
+
+  // 4. OPERASI
+  {cat:4,q:"Jika <em>a</em> = (1, 2, 3) dan <em>b</em> = (4, −1, 2), maka <em>a + b</em> = …", o:["(5, 1, 5)","(3, 3, 1)","(5, 3, 5)","(−3, 3, 1)","(4, −2, 6)"],ans:0,
+   e:"Jumlahkan tiap komponen sejenis:<br><em>a + b</em> = (1+4, 2+(−1), 3+2)<br><em>a + b</em> = <b>(5, 1, 5)</b>"},
+  {cat:4,q:"Jika <em>a</em> = (3, −2, 1) dan <em>b</em> = (1, 4, −3), maka <em>2a − b</em> = …", o:["(5, −8, 5)","(5, 8, −5)","(7, −8, 5)","(5, −8, −5)","(7, 8, 5)"],ans:0,
+   e:"1. Kalikan <em>a</em> dengan 2 ➔ 2<em>a</em> = (6, −4, 2)<br>2. Kurangi dengan <em>b</em> ➔ (6−1, −4−4, 2−(−3))<br>Hasil = <b>(5, −8, 5)</b>"},
+  {cat:4,q:"Diketahui <em>3a + b</em> = (7, 1) dan <em>a − b</em> = (1, 3). Nilai vektor <em>a</em> = …", o:["(2, 1)","(1, 2)","(3, 1)","(2, 2)","(1, 1)"],ans:0,
+   e:"Gunakan eliminasi, jumlahkan kedua persamaan:<br>(3a + b) + (a − b) = (7, 1) + (1, 3)<br>4a = (8, 4)<br><b>a = (2, 1)</b>"},
+  {cat:4,q:"Sifat komutatif penjumlahan vektor menyatakan bahwa …", o:["a + b = a − b","a + b = b + a","a · b = b · a","(a+b)+c = a+(b+c)","k(a+b) = ka+kb"],ans:1,
+   e:"Sifat komutatif pada penjumlahan artinya urutan bisa ditukar: <b>a + b = b + a</b>."},
+  {cat:4,q:"Jika <em>a</em> = (2, 3) dan k = −4, maka <em>ka</em> = …", o:["(−8, −12)","(8, 12)","(−8, 12)","(8, −12)","(−2, −7)"],ans:0,
+   e:"Kalikan setiap komponen dengan skalar k:<br><em>ka</em> = −4 × (2, 3)<br><em>ka</em> = <b>(−8, −12)</b>"},
+
+  // 5. PERKALIAN SKALAR
+  {cat:5,q:"Jika <em>a</em> = (1, −2, 2) dan <em>b</em> = (3, 1, −1), maka <em>a · b</em> = …", o:["−3","−1","0","1","3"],ans:0,
+   e:"<em>a · b</em> = (1)(3) + (−2)(1) + (2)(−1)<br><em>a · b</em> = 3 − 2 − 2 = <b>−3</b>"},
+  {cat:5,q:"Diketahui <em>|a|</em> = 6, <em>|b|</em> = 5, dan sudut antara <em>a</em> dan <em>b</em> adalah 60°. Nilai <em>a · b</em> = …", o:["10","15","18","20","30"],ans:1,
+   e:"Rumus dot product dengan sudut:<br><em>a · b</em> = <em>|a| |b|</em> cos(60°)<br><em>a · b</em> = 6 × 5 × ½<br><em>a · b</em> = 30 × ½ = <b>15</b>"},
+  {cat:5,q:"Vektor <em>a</em> = (2, k, 1) tegak lurus <em>b</em> = (3, −2, 4). Nilai k = …", o:["−5","−2","0","5","7"],ans:3,
+   e:"Tegak lurus berarti <em>a · b</em> = 0.<br>(2)(3) + k(−2) + (1)(4) = 0<br>6 − 2k + 4 = 0 ➔ 10 = 2k<br><b>k = 5</b>"},
+  {cat:5,q:"Jika <em>a · b</em> = 0, maka sudut antara <em>a</em> dan <em>b</em> adalah …", o:["0°","30°","60°","90°","180°"],ans:3,
+   e:"Jika hasil perkalian skalar (dot product) adalah 0, maka kedua vektor tersebut saling <b>tegak lurus (membentuk sudut 90°)</b>."},
+  {cat:5,q:"Besar sudut antara <em>a</em> = <em>i</em> + √3<em>j</em> dan <em>b</em> = √3<em>i</em> − <em>j</em> adalah …", o:["30°","60°","90°","120°","150°"],ans:2,
+   e:"Cek perkalian skalar <em>a · b</em> terlebih dahulu:<br><em>a · b</em> = (1)(√3) + (√3)(−1) = √3 − √3 = 0.<br>Karena 0, maka sudutnya pasti <b>90°</b>."},
+
+  // 6. PERBANDINGAN
+  {cat:6,q:"Titik R membagi <em>PQ</em> dengan perbandingan PR:RQ = 1:2. Jika P(0,0,0) dan Q(6,3,9), posisi R adalah …", o:["(2, 1, 3)","(3, 1.5, 4.5)","(4, 2, 6)","(1, 0.5, 1.5)","(6, 3, 9)"],ans:0,
+   e:"Rumus rasio: R = (2P + 1Q) / (1+2)<br>R = ( 2(0,0,0) + 1(6,3,9) ) / 3<br>R = (6, 3, 9) / 3<br>R = <b>(2, 1, 3)</b>"},
+  {cat:6,q:"Titik M adalah titik tengah AB, A(4, −2, 6) dan B(−2, 8, 4). Koordinat M adalah …", o:["(1, 3, 5)","(2, 3, 5)","(1, 4, 5)","(3, 3, 5)","(1, 3, 4)"],ans:0,
+   e:"Titik tengah adalah rata-rata x, y, dan z:<br>M = ( (4−2)/2, (−2+8)/2, (6+4)/2 )<br>M = ( 2/2, 6/2, 10/2 ) = <b>(1, 3, 5)</b>"},
+  {cat:6,q:"Titik P membagi AB dengan AP:PB = 3:1. Jika A(2,1) dan B(10,5), koordinat P adalah …", o:["(8, 4)","(7, 3)","(6, 3)","(4, 2)","(9, 4.5)"],ans:0,
+   e:"P = (1A + 3B) / (3+1)<br>P = ( 1(2,1) + 3(10,5) ) / 4<br>P = ( (2,1) + (30,15) ) / 4<br>P = (32, 16) / 4 = <b>(8, 4)</b>"},
+  {cat:6,q:"Jika vektor posisi A adalah <em>a</em> dan B adalah <em>b</em>, maka rumus titik P yang membagi AB dengan rasio m:n adalah …", o:["(na + mb)/(m+n)","(ma + nb)/(m+n)","(m·a − n·b)/(m−n)","m·a + n·b","(a + b)/2"],ans:0,
+   e:"Formula pembagian ruas garis:<br>Kalikan silang rasio dengan vektor titik tujuan. <b>P = (n·a + m·b) / (m + n)</b>."},
+  {cat:6,q:"Titik C membagi AB sehingga AC:CB = 2:3. Jika A(1,4) dan B(6,9), koordinat C = …", o:["(3, 6)","(4, 7)","(3, 7)","(4, 6)","(2, 5)"],ans:0,
+   e:"C = (3A + 2B) / (2+3)<br>C = ( 3(1,4) + 2(6,9) ) / 5<br>C = ( (3,12) + (12,18) ) / 5<br>C = (15, 30) / 5 = <b>(3, 6)</b>"},
+
+  // 7. PROYEKSI
+  {cat:7,q:"Proyeksi skalar ortogonal vektor <em>a</em> pada <em>b</em> dinyatakan dengan rumus …", o:["a · b","(a·b)/|b|","(a·b)/|a|","a×b","(a·b)/|b|²"],ans:1,
+   e:"Proyeksi <b>skalar</b> (hanya nilainya/panjang bayangan) <em>a</em> pada <em>b</em> dihitung dengan membagi hasil dot product dengan panjang vektor tujuannya: <b>(a·b) / |b|</b>"},
+  {cat:7,q:"Jika <em>a</em> = (3, 4) dan <em>b</em> = (1, 0), proyeksi ortogonal vektor <em>a</em> pada <em>b</em> adalah …", o:["(3, 0)","(0, 4)","(3, 4)","(4, 0)","(1, 0)"],ans:0,
+   e:"1. <em>a · b</em> = 3(1) + 4(0) = 3<br>2. <em>|b|²</em> = 1² + 0² = 1<br>3. Proyeksi vektor = [ (a·b) / |b|² ] × b<br>Proyeksi = (3/1) × (1, 0) = <b>(3, 0)</b>"},
+  {cat:7,q:"Diketahui <em>a</em> = (2, 6) dan <em>b</em> = (3, 1). Proyeksi skalar ortogonal <em>a</em> pada <em>b</em> adalah …", o:["2","12/√10","12","√10","6"],ans:1,
+   e:"1. Hitung <em>a · b</em> = (2)(3) + (6)(1) = 12<br>2. Hitung <em>|b|</em> = √(3² + 1²) = √10<br>3. Proyeksi skalar = (a·b) / |b| = <b>12 / √10</b>"},
+  {cat:7,q:"Proyeksi vektor <em>a</em> pada <em>b</em> merupakan vektor yang berimpit atau searah dengan …", o:["Vektor a","Vektor b","Vektor a+b","Vektor a−b","Vektor nol"],ans:1,
+   e:"Proyeksi vektor <em>a</em> PADA <em>b</em> ibarat menjatuhkan bayangan vektor <em>a</em> secara tegak lurus ke atas alas vektor <em>b</em>. Jadi, bayangan tersebut akan <b>searah (atau berlawanan) dan berimpit dengan vektor b</b>."},
+  {cat:7,q:"Jika <em>a</em> = (1, 2, 2) dan <em>b</em> = (2, 1, 0), proyeksi vektor <em>a</em> pada <em>b</em> adalah …", o:["(8/5, 4/5, 0)","(2, 1, 0)","(4, 2, 0)","(2/3, 1/3, 0)","(4/5, 4/5, 0)"],ans:0,
+   e:"1. <em>a · b</em> = 2 + 2 + 0 = 4<br>2. <em>|b|²</em> = 2² + 1² + 0² = 5<br>3. Proyeksi = (4/5) × (2, 1, 0)<br>Hasil = <b>(8/5, 4/5, 0)</b>"},
+
+  // 8. PENERAPAN / REAL LIFE
+  {cat:8,q:"Sebuah kapal berlayar ke arah timur 30 km, lalu berbelok ke utara 40 km. Jarak total/perpindahan kapal dari titik awal adalah …", o:["50 km","60 km","70 km","45 km","35 km"],ans:0,
+   e:"Perpindahan bisa digambarkan sebagai vektor (30, 40).<br>Jarak terpendek (panjang vektor) = √(30² + 40²) = √(900 + 1600) = √2500 = <b>50 km</b>."},
+  {cat:8,q:"Sebuah benda ditarik oleh dua gaya: F₁ = 3i + 4j (N) dan F₂ = i − 2j (N). Besar resultan gaya adalah …", o:["2√5 N","4 N","2√10 N","6 N","5 N"],ans:0,
+   e:"1. Resultan (jumlahkan vektor) = F₁ + F₂ = (4, 2)<br>2. Besar gaya total = √(4² + 2²) = √(16 + 4) = √20<br>√20 disederhanakan menjadi <b>2√5 Newton</b>."},
+  {cat:8,q:"Sebuah pesawat terbang ke arah (3, 4, 0) km/jam dan angin berhembus (1, 0, 0) km/jam. Kecepatan pesawat terhadap tanah adalah …", o:["(4, 4, 0)","(3, 4, 0)","(4, 4, 1)","(2, 4, 0)","(3, 5, 0)"],ans:0,
+   e:"Kecepatan total adalah penjumlahan vektor kecepatan pesawat dan angin.<br>Total = (3+1, 4+0, 0+0) = <b>(4, 4, 0)</b>"},
+  {cat:8,q:"Usaha (W) yang dilakukan gaya <em>F</em> untuk memindahkan sejauh <em>d</em> dihitung menggunakan …", o:["W = F × d","W = F · d","W = |F| + |d|","W = |F| × |d|","W = F / d"],ans:1,
+   e:"Dalam fisika, Usaha (Work) adalah hasil dari perkalian skalar (dot product) antara vektor gaya dan vektor perpindahan: <b>W = F · d</b>."},
+  {cat:8,q:"Dalam grafik komputer 3D, vektor normal (tegak lurus) digunakan pada suatu permukaan untuk menghitung …", o:["Warna dasar piksel","Sudut pantulan arah cahaya (Shading)","Ukuran objek memori","Koordinat objek pusat","Kecepatan animasi"],ans:1,
+   e:"Vektor normal sangat penting di game 3D. Ia dikalikan skalar (dot product) dengan vektor arah cahaya untuk <b>menentukan seberapa terang permukaan tersebut (Shading/Lighting)</b>."}
+];
+
+let activeCat = 0;
+let pool = [];
+let cur = 0;
+let score = 0;
+let wrong = 0;
+let answered = false;
+let categoryStats = {}; // To track correct answers per category
+
+const L = ['A', 'B', 'C', 'D', 'E'];
+const appEl = document.getElementById('app');
+
+function initData() {
+    CATS.forEach(c => categoryStats[c.id] = { total: 0, correct: 0 });
+    ALL.forEach(q => categoryStats[q.cat].total++);
+    switchCategory(0, false);
+}
+
+function switchCategory(catId, render = true) {
+    activeCat = catId;
+    if (catId === 0) {
+        pool = [...ALL];
+    } else {
+        pool = ALL.filter(q => q.cat === catId);
+    }
+    
+    // Reset stats for current attempt
+    cur = 0;
+    score = 0;
+    wrong = 0;
+    answered = false;
+    
+    // Reset category tracking for this session
+    CATS.forEach(c => categoryStats[c.id].correct = 0);
+    
+    if (render) renderQuiz();
+}
+
+function getHeaderHTML() {
+    const progressPct = pool.length > 0 ? (cur / pool.length) * 100 : 0;
+    
+    // Build tabs
+    let tabsHtml = `<div class="tabs-container">`;
+    CATS.forEach(c => {
+        const count = c.id === 0 ? ALL.length : categoryStats[c.id].total;
+        const isActive = c.id === activeCat ? 'active' : '';
+        tabsHtml += `<button class="tab-btn ${isActive}" onclick="switchCategory(${c.id})">${c.name} (${count})</button>`;
+    });
+    tabsHtml += `</div>`;
+
+    return `
+        <div class="header">
+            <h2>Kuis Vektor 40 Soal</h2>
+            <p>Pilih kategori soal dari menu di bawah</p>
+            <div class="progress-wrapper">
+                <div class="progress-fill" style="width: ${progressPct}%"></div>
+            </div>
+        </div>
+        ${tabsHtml}
+        <div style="padding: 0 25px;">
+            <div class="stats-bar">
+                <span>Soal ${cur + 1} / ${pool.length}</span>
+                <span>✅ ${score} &nbsp; ❌ ${wrong}</span>
+            </div>
+        </div>
+    `;
+}
+
+function renderQuiz() {
+    if (cur >= pool.length) {
+        showEndScreen();
+        return;
+    }
+
+    answered = false;
+    const s = pool[cur];
+    const catInfo = CATS.find(c => c.id === s.cat);
+
+    let html = getHeaderHTML();
+    
+    html += `
+        <div class="quiz-body fade-in-section" id="quiz-content">
+            ${activeCat === 0 ? `<div class="cat-badge" style="background:${catInfo.bg}; color:${catInfo.tc}; border: 1px solid ${catInfo.tc}30">${catInfo.name}</div>` : ''}
+            <div class="question-number">PERTANYAAN ${cur + 1}</div>
+            <div class="question-text">${s.q}</div>
+            
+            <div class="options-grid" id="options-container">
+                ${s.o.map((opt, i) => `
+                    <button class="option-btn" onclick="pick(${i})" id="opt-${i}">
+                        <div class="option-letter">${L[i]}</div>
+                        <div class="option-text">${opt}</div>
+                    </button>
+                `).join('')}
+            </div>
+
+            <div class="explanation-box" id="explanation">
+                <div class="explanation-title">💡 Pembahasan</div>
+                <div id="exp-text"><p>${s.e}</p></div>
+            </div>
+        </div>
+
+        <div class="quiz-footer">
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Selanjutnya ➔</button>
+        </div>
+    `;
+    
+    appEl.innerHTML = html;
+    
+    // Scroll handling for mobile
+    const quizBody = document.querySelector('.quiz-body');
+    if (quizBody) quizBody.scrollTop = 0;
+    else window.scrollTo(0, 0);
+}
+
+function pick(idx) {
+    if (answered) return;
+    answered = true;
+    
+    const s = pool[cur];
+    const opts = document.querySelectorAll('.option-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const expBox = document.getElementById('explanation');
+
+    opts.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === s.ans) btn.classList.add('correct');
+        else if (i === idx && idx !== s.ans) btn.classList.add('wrong');
+    });
+
+    if (idx === s.ans) {
+        score++;
+        categoryStats[s.cat].correct++; // Track category specific score
+    } else {
+        wrong++;
+    }
+
+    // Update real-time stats
+    document.querySelector('.stats-bar').innerHTML = `
+        <span>Soal ${cur + 1} / ${pool.length}</span>
+        <span>✅ ${score} &nbsp; ❌ ${wrong}</span>
+    `;
+
+    expBox.classList.add('show');
+    nextBtn.classList.add('show');
+    
+    if (window.innerWidth <= 600) {
+        setTimeout(() => {
+            const quizBody = document.querySelector('.quiz-body');
+            quizBody.scrollTo({ top: quizBody.scrollHeight, behavior: 'smooth' });
+        }, 100);
+    }
+}
+
+function nextQuestion() {
+    cur++;
+    renderQuiz();
+}
+
+function showEndScreen() {
+    const pct = Math.round(score / pool.length * 100);
+    let grade, gradeClass, msg;
+
+    if (pct >= 85) { grade = 'Sangat Baik'; gradeClass = 'grade-a'; msg = 'Luar biasa! Kamu menguasai materi ini dengan sangat baik.'; } 
+    else if (pct >= 70) { grade = 'Baik'; gradeClass = 'grade-b'; msg = 'Bagus! Lanjutkan belajarmu untuk meraih nilai sempurna.'; } 
+    else if (pct >= 55) { grade = 'Cukup'; gradeClass = 'grade-c'; msg = 'Cukup baik. Ulangi konsep yang masih salah di bagian pembahasan.'; } 
+    else { grade = 'Perlu Belajar'; gradeClass = 'grade-d'; msg = 'Tetap semangat! Perlu latihan lebih banyak dari dasar.'; }
+
+    // Generate Breakdown
+    let breakdownHtml = '';
+    if (activeCat === 0) { // Only show breakdown if all categories were played
+        breakdownHtml = `<div class="breakdown-grid">`;
+        CATS.forEach(c => {
+            if (c.id === 0) return; // Skip "Semua"
+            const stat = categoryStats[c.id];
+            const catPct = (stat.correct / stat.total) * 100;
+            breakdownHtml += `
+                <div class="bk-card">
+                    <div class="bk-title" style="color: ${c.tc}">${c.name}</div>
+                    <div class="bk-score">${stat.correct} / ${stat.total}</div>
+                    <div class="bk-bar">
+                        <div class="bk-fill" style="width: ${catPct}%; background: ${c.tc}"></div>
+                    </div>
+                </div>
+            `;
+        });
+        breakdownHtml += `</div>`;
+    }
+
+    appEl.innerHTML = `
+        <div class="header" style="text-align: center; padding: 40px 20px 20px;">
+            <h2>Hasil Kuis Vektor</h2>
+            <div class="progress-wrapper"><div class="progress-fill" style="width: 100%"></div></div>
+        </div>
+        <div class="quiz-body result-screen fade-in-section">
+            <div class="grade-badge ${gradeClass}">${grade}</div>
+            <div class="score-display">${score}<span style="font-size: 30px; color: var(--text-muted);">/${pool.length}</span></div>
+            <div class="score-subtitle">Akurasi: ${pct}%</div>
+            <p class="result-message">${msg}</p>
+            
+            ${breakdownHtml}
+            
+            <button class="restart-btn" onclick="switchCategory(${activeCat})">↻ Ulangi Latihan</button>
+        </div>
+    `;
+}
+
+// Mulai aplikasi
+initData();
+renderQuiz();
+
+</script>
+</body>
+</html>
