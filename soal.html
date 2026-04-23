@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kuis Interaktif - Perkalian Skalar Vektor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #f8fafc;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-color: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 85vh; /* Base height for desktop */
+        }
+
+        /* Header & Progress */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
+            padding: 30px 25px;
+            position: relative;
+        }
+
+        .header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-wrapper {
+            background: var(--border);
+            height: 6px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #fde047;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Quiz Body */
+        .quiz-body {
+            padding: 30px 25px;
+            flex-grow: 1; /* Pushes footer down */
+        }
+
+        .question-number {
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: inline-block;
+            background: #e0e7ff;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        /* Math Typography */
+        em, .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 110%;
+            color: #0f172a;
+            padding: 0 2px;
+        }
+
+        /* Options */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 15px;
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #e0e7ff;
+            transform: translateY(-2px);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* States */
+        .option-btn.correct {
+            border-color: var(--success);
+            background: var(--success-bg);
+            color: #064e3b;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .option-btn.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .option-btn.wrong {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+            color: #7f1d1d;
+        }
+
+        .option-btn.wrong .option-letter {
+            background: var(--danger);
+            color: white;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+            transform: none !important;
+        }
+
+        /* Explanation Baru */
+        .explanation-box {
+            margin-top: 35px; 
+            padding: 24px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 6px solid var(--primary);
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            display: none;
+            animation: slideDown 0.4s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .explanation-box.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            color: var(--primary);
+            font-size: 17px;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 12px;
+        }
+        
+        .explanation-box p {
+            margin-bottom: 8px;
+        }
+
+        /* Footer / Navigation */
+        .quiz-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            background: var(--secondary);
+            z-index: 10;
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .next-btn.show {
+            display: inline-block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .next-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Results Screen */
+        .result-screen {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .trophy {
+            font-size: 70px;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        .score-display {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .score-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .grade-a { background: var(--success-bg); color: #064e3b; }
+        .grade-b { background: #e0e7ff; color: #3730a3; }
+        .grade-c { background: #fef3c7; color: #92400e; }
+        .grade-d { background: var(--danger-bg); color: #7f1d1d; }
+
+        .result-message {
+            font-size: 16px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 35px;
+            padding: 0 20px;
+        }
+
+        .restart-btn {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .restart-btn:hover {
+            background: black;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-7px); }
+        }
+
+        .fade-in-section {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* ========================================= */
+        /* MEDIA QUERIES UNTUK MODE HP (MOBILE APP)  */
+        /* ========================================= */
+        @media (max-width: 600px) {
+            body {
+                padding: 0;
+                background-color: white; /* Menyatu dengan container */
+            }
+
+            .quiz-container {
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh;
+                height: 100vh; /* Full screen di HP */
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
+            .header h2 {
+                font-size: 18px;
+            }
+
+            .stats-bar {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .quiz-body {
+                padding: 20px 15px 100px 15px; /* Extra padding bawah untuk sticky footer */
+                overflow-y: auto; /* Memungkinkan scroll khusus di area soal */
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .option-btn {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .explanation-box {
+                padding: 15px;
+                font-size: 14px;
+                margin-top: 25px;
+            }
+
+            .quiz-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                padding: 15px;
+                background: white;
+                box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .next-btn {
+                width: 100%; /* Tombol besar selebar layar di HP */
+                padding: 16px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="app">
+    <!-- Konten akan di-render oleh JavaScript -->
+</div>
+
+<script>
+// Data soal tidak ada yang diubah (tetap sinkron dan rapi seperti sebelumnya)
+const Q = [
+  {
+    q:"Diketahui vektor <em>u</em> = 5<em>i</em> − 12<em>j</em>. Panjang vektor <em>|u|</em> adalah …",
+    o:["7","11","13","17","√193"],ans:2,
+    e:"<b>Langkah Penyelesaian:</b><br>Gunakan rumus panjang vektor: <em>|u|</em> = √(x² + y²)<br><em>|u|</em> = √(5² + (−12)²)<br><em>|u|</em> = √(25 + 144)<br><em>|u|</em> = √169 = <b>13</b>"
+  },
+  {
+    q:"Jika <em>a</em> = <em>i</em> + 2<em>j</em> − 2<em>k</em> dan <em>b</em> = 2<em>i</em> − <em>j</em> + 2<em>k</em>, maka <em>a · b</em> = …",
+    o:["−4","−2","0","2","6"],ans:0,
+    e:"<b>Langkah Penyelesaian:</b><br>Kalikan komponen yang sejenis: <em>a · b</em> = (x₁)(x₂) + (y₁)(y₂) + (z₁)(z₂)<br><em>a · b</em> = (1)(2) + (2)(−1) + (−2)(2)<br><em>a · b</em> = 2 − 2 − 4<br><em>a · b</em> = <b>−4</b>"
+  },
+  {
+    q:"Diketahui titik P(3, −1, 2) dan Q(7, 3, −2). Nilai <em>|PQ|</em> = …",
+    o:["4√2","6","4√3","√56","8√3"],ans:2,
+    e:"<b>Langkah Penyelesaian:</b><br>1. Cari vektor PQ = Titik Q − Titik P<br>PQ = (7−3, 3−(−1), −2−2) = (4, 4, −4)<br>2. Hitung panjangnya:<br><em>|PQ|</em> = √(4² + 4² + (−4)²)<br><em>|PQ|</em> = √(16 + 16 + 16)<br><em>|PQ|</em> = √48 = √(16 × 3) = <b>4√3</b>"
+  },
+  {
+    q:"Jika <em>|a|</em> = 5, <em>|b|</em> = 8, dan sudut antara <em>a</em> dan <em>b</em> adalah 120°, maka <em>a · b</em> = …",
+    o:["−20","−40","20","40","−10√3"],ans:0,
+    e:"<b>Langkah Penyelesaian:</b><br>Gunakan rumus sudut: <em>a · b</em> = <em>|a|</em> <em>|b|</em> cos θ<br><em>a · b</em> = (5)(8) × cos(120°)<br><em>a · b</em> = 40 × (−½)<br><em>a · b</em> = <b>−20</b>"
+  },
+  {
+    q:"Vektor <em>p</em> = 3<em>i</em> − 4<em>k</em> dan <em>q</em> = 2<em>j</em> + <em>k</em>. Nilai <em>p · q</em> = …",
+    o:["−8","−4","0","4","8"],ans:1,
+    e:"<b>Langkah Penyelesaian:</b><br>Tulis vektor secara lengkap dengan komponen (x, y, z):<br><em>p</em> = (3, 0, −4)<br><em>q</em> = (0, 2, 1)<br><em>p · q</em> = (3)(0) + (0)(2) + (−4)(1)<br><em>p · q</em> = 0 + 0 − 4 = <b>−4</b>"
+  },
+  {
+    q:"Diketahui <em>a</em> + <em>b</em> + <em>c</em> = 0, <em>|a|</em> = 4, <em>|b|</em> = 6, <em>|c|</em> = 8. Nilai <em>a · b</em> = …",
+    o:["−6","−2","2","6","12"],ans:3,
+    e:"<b>Langkah Penyelesaian:</b><br>1. Karena <em>a + b + c = 0</em>, maka <em>c = −(a + b)</em><br>2. Kuadratkan kedua sisi: <em>|c|²</em> = <em>|a + b|²</em><br>64 = <em>|a|²</em> + <em>|b|²</em> + 2(<em>a · b</em>)<br>64 = 16 + 36 + 2(<em>a · b</em>)<br>64 = 52 + 2(<em>a · b</em>)<br>12 = 2(<em>a · b</em>) ➔ <b><em>a · b</em> = 6</b>"
+  },
+  {
+    q:"Jika vektor <em>a</em> = 2<em>i</em> + <em>j</em> − 2<em>k</em> dan <em>b</em> = 3<em>i</em> − 2<em>j</em> + 2<em>k</em>, besar sudut antara <em>a</em> dan <em>b</em> adalah …",
+    o:["30°","45°","60°","90°","120°"],ans:3,
+    e:"<b>Langkah Penyelesaian:</b><br>Cek nilai perkalian titik (dot product) terlebih dahulu:<br><em>a · b</em> = (2)(3) + (1)(−2) + (−2)(2)<br><em>a · b</em> = 6 − 2 − 4 = <b>0</b><br><br>Karena hasil kalinya 0, maka kedua vektor pasti saling tegak lurus, sehingga sudutnya adalah <b>90°</b>."
+  },
+  {
+    q:"Diketahui <em>|a|</em> = √5 dan <em>(a+b)·(a−b)</em> = −4. Maka <em>|b|</em> = …",
+    o:["2","3","4","5","9"],ans:1,
+    e:"<b>Langkah Penyelesaian:</b><br>Sifat perkalian: <em>(a+b)·(a−b) = |a|² − |b|²</em><br>−4 = (√5)² − <em>|b|²</em><br>−4 = 5 − <em>|b|²</em><br><em>|b|²</em> = 5 + 4 = 9<br><em>|b|</em> = √9 = <b>3</b>"
+  },
+  {
+    q:"Titik A(2, 3, 1), B(4, 1, 5), dan C(6, 3, 5). Besar sudut <em>ABC</em> (sudut di titik B) adalah …",
+    o:["30°","45°","60°","90°","120°"],ans:3,
+    e:"<b>Langkah Penyelesaian:</b><br>1. Vektor BA = Titik A − Titik B = (−2, 2, −4)<br>2. Vektor BC = Titik C − Titik B = (2, 2, 0)<br>3. Hitung BA · BC:<br>BA · BC = (−2)(2) + (2)(2) + (−4)(0)<br>BA · BC = −4 + 4 + 0 = <b>0</b><br><br>Karena hasil kalinya 0, maka sudut ABC adalah <b>90°</b>."
+  },
+  {
+    q:"Jika vektor <em>a</em> = k<em>i</em> + 2<em>j</em> − <em>k</em> dan <em>b</em> = 2<em>i</em> − <em>j</em> − 4<em>k</em> saling tegak lurus, nilai k = …",
+    o:["−3","−2","−1","1","2"],ans:2,
+    e:"<b>Langkah Penyelesaian:</b><br>Syarat dua vektor tegak lurus adalah <em>a · b</em> = 0.<br>(k)(2) + (2)(−1) + (−1)(−4) = 0<br>2k − 2 + 4 = 0<br>2k + 2 = 0<br>2k = −2 ➔ <b>k = −1</b>"
+  },
+  {
+    q:"Diketahui <em>|a|</em> = 10, <em>|b|</em> = 8, dan sudut antara <em>a</em> dan <em>b</em> adalah 60°. Nilai <em>|a − b|</em> = …",
+    o:["2√21","6√2","2√19","4√6","4√21"],ans:0,
+    e:"<b>Langkah Penyelesaian:</b><br>Gunakan aturan kosinus vektor:<br><em>|a − b|²</em> = <em>|a|²</em> + <em>|b|²</em> − 2<em>|a||b|</em>cos(60°)<br><em>|a − b|²</em> = 100 + 64 − 2(10)(8)(½)<br><em>|a − b|²</em> = 164 − 80 = 84<br><em>|a − b|</em> = √84 = √(4 × 21) = <b>2√21</b>"
+  },
+  {
+    q:"Vektor <em>a</em> = <em>i</em> − 2<em>j</em> + 2<em>k</em> dan <em>b</em> = 3<em>i</em> + 4<em>j</em> − <em>k</em>. Nilai cos θ antara <em>a</em> dan <em>b</em> adalah …",
+    o:["−7/(3√26)","7/(3√26)","−3/√26","1/5","−1/5"],ans:0,
+    e:"<b>Langkah Penyelesaian:</b><br>1. Hitung <em>a · b</em>: (1)(3) + (−2)(4) + (2)(−1) = 3 − 8 − 2 = −7<br>2. Hitung panjang <em>|a|</em>: √(1² + (−2)² + 2²) = √9 = 3<br>3. Hitung panjang <em>|b|</em>: √(3² + 4² + (−1)²) = √26<br><br>cos θ = (<em>a · b</em>) / (<em>|a| |b|</em>) = <b>−7 / (3√26)</b>"
+  },
+  {
+    q:"Jika <em>a · b</em> = 12, <em>|a|</em> = 4, <em>|b|</em> = 6, maka besar sudut antara <em>a</em> dan <em>b</em> adalah …",
+    o:["30°","45°","60°","90°","120°"],ans:2,
+    e:"<b>Langkah Penyelesaian:</b><br>Rumus: cos θ = (<em>a · b</em>) / (<em>|a| |b|</em>)<br>cos θ = 12 / (4 × 6)<br>cos θ = 12 / 24<br>cos θ = ½<br><br>Sudut dengan nilai cos ½ adalah <b>60°</b>."
+  },
+  {
+    q:"Diketahui segitiga ABC dengan A(1,2,3), B(3,2,1) dan C(1,4,3). Nilai <em>AB · AC</em> = …",
+    o:["−4","0","4","6","−6"],ans:1,
+    e:"<b>Langkah Penyelesaian:</b><br>1. Vektor AB = Titik B − Titik A = (2, 0, −2)<br>2. Vektor AC = Titik C − Titik A = (0, 2, 0)<br><br>AB · AC = (2)(0) + (0)(2) + (−2)(0)<br>AB · AC = 0 + 0 + 0 = <b>0</b>"
+  },
+  {
+    q:"Jika <em>|a + b|</em> = <em>|a − b|</em>, maka hubungan <em>a</em> dan <em>b</em> adalah …",
+    o:["a dan b sejajar","a dan b tegak lurus","<em>|a|</em> = <em>|b|</em>","a·b = 1","a = b"],ans:1,
+    e:"<b>Langkah Penyelesaian:</b><br>Kuadratkan kedua sisi persamaan:<br><em>|a|²</em> + 2(<em>a · b</em>) + <em>|b|²</em> = <em>|a|²</em> − 2(<em>a · b</em>) + <em>|b|²</em><br>Coret ruas yang sama (<em>|a|²</em> dan <em>|b|²</em>):<br>2(<em>a · b</em>) = −2(<em>a · b</em>)<br>4(<em>a · b</em>) = 0  ➔  <em>a · b</em> = 0<br><br>Jika <em>a · b</em> = 0, artinya vektor <b>a saling tegak lurus dengan b</b>."
+  },
+  {
+    q:"Vektor <em>r</em> = 2<em>i</em> + t<em>j</em> − <em>k</em>. Jika <em>|r|</em> = √14 dan t > 0, maka nilai t = …",
+    o:["1","2","3","4","5"],ans:2,
+    e:"<b>Langkah Penyelesaian:</b><br><em>|r|²</em> = x² + y² + z²<br>(√14)² = 2² + t² + (−1)²<br>14 = 4 + t² + 1<br>14 = 5 + t²<br>t² = 9 ➔ t = ±3.<br><br>Karena syarat di soal t > 0, maka jawabannya <b>3</b>."
+  },
+  {
+    q:"Diketahui <em>a</em> = 2<em>i</em> − 3<em>j</em> + <em>k</em> dan <em>b</em> = <em>i</em> + 2<em>j</em> + 3<em>k</em>. Nilai <em>(2a) · b</em> = …",
+    o:["−8","−4","−2","2","8"],ans:2,
+    e:"<b>Langkah Penyelesaian:</b><br>Sifat skalar: <em>(2a) · b</em> = 2 × (<em>a · b</em>)<br>Hitung <em>a · b</em> dahulu:<br><em>a · b</em> = (2)(1) + (−3)(2) + (1)(3) = 2 − 6 + 3 = −1<br><br>Maka, <em>(2a) · b</em> = 2 × (−1) = <b>−2</b>."
+  },
+  {
+    q:"Jika <em>a</em> = <em>i</em> + 2<em>j</em>, <em>b</em> = 3<em>i</em> − <em>j</em> + <em>k</em>, dan <em>c</em> = <em>i</em> − <em>k</em>, maka <em>a · (b + c)</em> = …",
+    o:["2","4","6","−2","0"],ans:0,
+    e:"<b>Langkah Penyelesaian:</b><br>1. Hitung (b + c) dahulu:<br>(b + c) = (3+1)<em>i</em> + (−1+0)<em>j</em> + (1−1)<em>k</em> = 4<em>i</em> − 1<em>j</em> + 0<em>k</em><br>2. Hitung <em>a · (b + c)</em>:<br><em>a</em> = (1, 2, 0)<br>(b + c) = (4, −1, 0)<br>Hasil = (1)(4) + (2)(−1) + (0)(0) = 4 − 2 = <b>2</b>."
+  },
+  {
+    q:"Diketahui vektor <em>p</em> = 4<em>i</em> − 3<em>j</em> + <em>k</em>. Nilai <em>p · p</em> sama dengan …",
+    o:["25","26","16","√26","√25"],ans:1,
+    e:"<b>Langkah Penyelesaian:</b><br>Ingat bahwa <em>p · p</em> sama nilainya dengan kuadrat panjang vektor tersebut (<em>|p|²</em>).<br><em>p · p</em> = 4² + (−3)² + 1²<br><em>p · p</em> = 16 + 9 + 1 = <b>26</b>."
+  },
+  {
+    q:"Dua vektor <em>a</em> dan <em>b</em> dimana <em>|a|</em> = 3 dan <em>|b|</em> = 4. Jika <em>a · b</em> = −6, maka cos θ = …",
+    o:["−½","½","−√3/2","√3/2","−¼"],ans:0,
+    e:"<b>Langkah Penyelesaian:</b><br>Gunakan rumus: cos θ = (<em>a · b</em>) / (<em>|a| |b|</em>)<br>cos θ = −6 / (3 × 4)<br>cos θ = −6 / 12<br>cos θ = <b>−½</b>."
+  }
+];
+
+let cur = 0;
+let score = 0;
+let wrong = 0;
+let answered = false;
+const L = ['A', 'B', 'C', 'D', 'E'];
+const appEl = document.getElementById('app');
+
+function renderQuiz() {
+    if (cur >= Q.length) {
+        showEndScreen();
+        return;
+    }
+
+    answered = false;
+    const s = Q[cur];
+    const progressPct = (cur / Q.length) * 100;
+
+    let html = `
+        <div class="header">
+            <h2>Perkalian Skalar Dua Vektor</h2>
+            <p>Pilih jawaban yang paling tepat</p>
+            <div class="stats-bar">
+                <span>Soal ${cur + 1} / ${Q.length}</span>
+                <span>✅ ${score} &nbsp; ❌ ${wrong}</span>
+            </div>
+            <div class="progress-wrapper">
+                <div class="progress-fill" style="width: ${progressPct}%"></div>
+            </div>
+        </div>
+        
+        <div class="quiz-body fade-in-section" id="quiz-content">
+            <div class="question-number">Pertanyaan ${cur + 1}</div>
+            <div class="question-text">${s.q}</div>
+            
+            <div class="options-grid" id="options-container">
+                ${s.o.map((opt, i) => `
+                    <button class="option-btn" onclick="pick(${i})" id="opt-${i}">
+                        <div class="option-letter">${L[i]}</div>
+                        <div class="option-text">${opt}</div>
+                    </button>
+                `).join('')}
+            </div>
+
+            <div class="explanation-box" id="explanation">
+                <div class="explanation-title">💡 Pembahasan</div>
+                <div id="exp-text"><p>${s.e}</p></div>
+            </div>
+        </div>
+
+        <div class="quiz-footer">
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Selanjutnya ➔</button>
+        </div>
+    `;
+    
+    appEl.innerHTML = html;
+    
+    // Scroll otomatis ke atas (berguna di mode HP saat pindah soal)
+    const quizBody = document.querySelector('.quiz-body');
+    if (quizBody) {
+        quizBody.scrollTop = 0;
+    } else {
+        window.scrollTo(0, 0);
+    }
+}
+
+function pick(idx) {
+    if (answered) return;
+    answered = true;
+    
+    const s = Q[cur];
+    const opts = document.querySelectorAll('.option-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const expBox = document.getElementById('explanation');
+
+    opts.forEach((btn, i) => {
+        btn.disabled = true; // Disable all buttons
+        if (i === s.ans) {
+            btn.classList.add('correct');
+        } else if (i === idx && idx !== s.ans) {
+            btn.classList.add('wrong');
+        }
+    });
+
+    if (idx === s.ans) {
+        score++;
+    } else {
+        wrong++;
+    }
+
+    // Update stats dynamically in the header
+    document.querySelector('.stats-bar').innerHTML = `
+        <span>Soal ${cur + 1} / ${Q.length}</span>
+        <span>✅ ${score} &nbsp; ❌ ${wrong}</span>
+    `;
+
+    expBox.classList.add('show');
+    nextBtn.classList.add('show');
+    
+    // Auto scroll sedikit ke bawah di mode HP jika pembahasan panjang
+    if (window.innerWidth <= 600) {
+        setTimeout(() => {
+            const quizBody = document.querySelector('.quiz-body');
+            quizBody.scrollTo({
+                top: quizBody.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 100);
+    }
+}
+
+function nextQuestion() {
+    cur++;
+    renderQuiz();
+}
+
+function showEndScreen() {
+    const pct = Math.round(score / Q.length * 100);
+    let grade, gradeClass, msg, emoji;
+
+    if (pct >= 85) {
+        grade = 'Sangat Baik'; gradeClass = 'grade-a'; emoji = '🏆';
+        msg = 'Luar biasa! Kamu menguasai perkalian skalar vektor dengan sangat baik.';
+    } else if (pct >= 70) {
+        grade = 'Baik'; gradeClass = 'grade-b'; emoji = '🌟';
+        msg = 'Bagus! Kamu sudah memahami sebagian besar konsep. Tingkatkan lagi kecepatanmu.';
+    } else if (pct >= 55) {
+        grade = 'Cukup'; gradeClass = 'grade-c'; emoji = '📚';
+        msg = 'Cukup baik. Ulangi kembali konsep perkalian skalar dan sudut antar vektor.';
+    } else {
+        grade = 'Perlu Belajar'; gradeClass = 'grade-d'; emoji = '💪';
+        msg = 'Tetap semangat! Perlu latihan lebih banyak. Pelajari perlahan langkah-langkah di pembahasannya.';
+    }
+
+    appEl.innerHTML = `
+        <div class="header" style="text-align: center; padding: 40px 20px;">
+            <h2>Hasil Latihan Kamu</h2>
+            <div class="progress-wrapper"><div class="progress-fill" style="width: 100%"></div></div>
+        </div>
+        <div class="quiz-body result-screen fade-in-section">
+            <div class="trophy">${emoji}</div>
+            <div class="grade-badge ${gradeClass}">${grade}</div>
+            <div class="score-display">${score}<span style="font-size: 30px; color: var(--text-muted);">/${Q.length}</span></div>
+            <div class="score-subtitle">Akurasi: ${pct}%</div>
+            <p class="result-message">${msg}</p>
+            <button class="restart-btn" onclick="restart()">↻ Ulangi Latihan</button>
+        </div>
+    `;
+}
+
+function restart() {
+    cur = 0;
+    score = 0;
+    wrong = 0;
+    answered = false;
+    renderQuiz();
+}
+
+// Mulai aplikasi
+renderQuiz();
+
+</script>
+</body>
+</html>
